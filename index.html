@@ -874,7 +874,7 @@
       <div class="form-header-titulo">Solicite sua cotação gratuita</div>
       <p class="form-header-sub">Preencha abaixo e eu entro em contato em até <strong>1 hora</strong> — em português, sem compromisso.</p>
 
-      <form id="lead-form" onsubmit="enviarForm(event)">
+      <form id="lead-form" action="https://formspree.io/f/xvzjqpgr" method="POST" onsubmit="enviarForm(event)">
 
         <div class="form-grupo">
           <label class="form-label" for="nome">Nome completo</label>
@@ -1058,10 +1058,18 @@ function enviarForm(e) {
   e.preventDefault();
   const form = document.getElementById('lead-form');
   const sucesso = document.getElementById('form-sucesso');
-  form.style.display = 'none';
-  sucesso.style.display = 'block';
-  // Aqui você conecta ao seu CRM, Airtable, Zapier, etc.
-  // fetch('/api/lead', { method:'POST', body: new FormData(form) })
+  fetch('https://formspree.io/f/xvzjqpgr', {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  }).then(r => {
+    if (r.ok) {
+      document.getElementById('form-conteudo').style.display = 'none';
+      sucesso.style.display = 'block';
+    } else {
+      alert('Erro ao enviar. Tente novamente.');
+    }
+  }).catch(() => alert('Erro de conexão. Tente novamente.'));
 }
 
 function toggleFaq(btn) {
